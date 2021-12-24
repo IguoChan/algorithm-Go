@@ -24,6 +24,7 @@ func InsertSort(nums []int) []int {
 	return nums
 }
 
+// 实测效果反而不如
 func OptInsertSort(nums []int) []int {
 	for i := 1; i < len(nums); i++ {
 		tmp := nums[i]
@@ -206,18 +207,21 @@ func MergeSort(nums []int) []int {
 
 // 快速排序
 func QuickSort(nums []int) []int {
+	// 以数组最右端的数据为基准，i记录基准应该交换的位置
 	partition := func(nums []int, p, r int) int {
 		tmp := nums[r]
-		i := p - 1
+		i := p
 		for j := p; j < r; j++ {
 			if nums[j] <= tmp {
+				if i != j {
+					nums[i], nums[j] = nums[j], nums[i]
+				}
 				i++
-				nums[i], nums[j] = nums[j], nums[i]
 			}
 		}
-		nums[i+1], nums[r] = nums[r], nums[i+1]
+		nums[i], nums[r] = nums[r], nums[i]
 
-		return i + 1
+		return i
 	}
 
 	randomP := func(nums []int, p, r int) int {
@@ -238,4 +242,37 @@ func QuickSort(nums []int) []int {
 	quickSort(nums, 0, len(nums)-1)
 
 	return nums
+}
+
+// 计数排序
+func CountingSort(nums []int, k int) []int {
+	// 1. 申请计数数组，因为go默认零值，无需置零
+	cntArr := make([]int, k+1)
+
+	// 2. 计数，在nums[i]位置加1，可能有重复
+	for i := range nums {
+		cntArr[nums[i]]++
+	}
+
+	// 3. 累积计数
+	//for i := 1; i <= k; i++ {
+	//	cntArr[i] = cntArr[i] + cntArr[i-1]
+	//}
+	//
+	//// 4. 输出位置，此时的cntArr就是计数数组，cntArr[nums[i]]-1 代表这个nums[i]这个数应该在res的所在位置
+	//res := make([]int, len(nums))
+	//for i := range nums {
+	//	res[cntArr[nums[i]]-1] = nums[i]
+	//	cntArr[nums[i]] = cntArr[nums[i]] - 1
+	//}
+
+	// cntArr[i] 代表i在nums中的个数
+	res := make([]int, 0, len(nums))
+	for i := range cntArr {
+		for j := 0; j < cntArr[i]; j++ {
+			res = append(res, i)
+		}
+	}
+
+	return res
 }
