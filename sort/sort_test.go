@@ -2,6 +2,7 @@ package sort
 
 import (
 	"math/rand"
+	"sort"
 	"testing"
 )
 
@@ -87,8 +88,15 @@ func BenchmarkCountingSort(b *testing.B) {
 	}
 }
 
+// 测测go包标准的排序算法
+func BenchmarkStandardSort(b *testing.B) {
+	for n := 0; n < b.N; n++ {
+		sort.Ints(sortSlice)
+	}
+}
+
 func init() {
-	sortSlice = make([]int, 1000000)
+	sortSlice = make([]int, 100000)
 	for i := range sortSlice {
 		// 伪随机，出来的是同样的数据，更可以考察不同排序的性能
 		sortSlice[i] = rand.Intn(MaxCount)
